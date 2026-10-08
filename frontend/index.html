@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Docker Task Manager</title>
+</head>
+
+<body>
+
+<h1>Docker Task Manager</h1>
+
+<input id="task" placeholder="Enter task">
+
+<button onclick="addTask()">Add Task</button>
+
+<h2>Tasks</h2>
+
+<ul id="tasks"></ul>
+
+<script>
+
+async function loadTasks() {
+
+    const response = await fetch("/api/tasks");
+
+    const tasks = await response.json();
+
+    const list = document.getElementById("tasks");
+
+    list.innerHTML = "";
+
+    tasks.forEach(task => {
+
+        const li = document.createElement("li");
+
+        li.innerText = task.name;
+
+        list.appendChild(li);
+
+    });
+}
+
+async function addTask() {
+
+    const task = document.getElementById("task").value;
+
+    await fetch("/api/tasks", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            name: task
+        })
+
+    });
+
+    document.getElementById("task").value = "";
+
+    loadTasks();
+}
+
+loadTasks();
+
+</script>
+
+</body>
+</html>
